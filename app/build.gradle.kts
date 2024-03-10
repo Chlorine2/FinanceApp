@@ -67,4 +67,7 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.2.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:calendar:1.2.0")
 }
