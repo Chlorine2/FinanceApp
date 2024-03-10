@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -34,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -41,11 +44,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.financeapp.Navigation.ScreensEnum
 import com.app.financeapp.R
+import com.app.financeapp.Screens.Chart.BarChart
 import com.app.financeapp.Screens.Chart.PieChart
 
 @Composable
@@ -62,11 +67,11 @@ fun HomeScreen(){
             ),
             contentScale = ContentScale.FillBounds
         )
-        .padding(vertical = 10.dp, horizontal = 20.dp)
+        .padding(horizontal = 20.dp)
     ){
         Column {
             Text(text = "Капітал", fontFamily = FontFamily(Font(R.font.main_text)),
-                fontSize = 25.sp)
+                fontSize = 25.sp, modifier = Modifier.padding(top = 10.dp))
             Spacer(modifier = Modifier.height(20.dp))
             Row()
             {
@@ -150,35 +155,102 @@ fun HomeScreen(){
 
 @Composable
 fun Costs(){
-    Card(modifier = Modifier
-        .height(280.dp)
-        .fillMaxWidth()
-        .padding(horizontal = 10.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-    ){
-        Box(modifier = Modifier.padding(20.dp)){
-            Column() {
+    Column(modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .padding(horizontal = 10.dp)) {
 
-                Text(text = "Грудень 2023", fontFamily = FontFamily(Font(R.font.main_text)),
-                    fontSize = 18.sp)
 
-                Box(modifier = Modifier.height(220.dp).fillMaxWidth().padding(vertical = 40.dp, horizontal = 5.dp)) {
-                    PieChart(data = mapOf(
-                        Pair("Sample-1", 150),
-                        Pair("Sample-2", 120),
-                        Pair("Sample-3", 110),
-                        Pair("Sample-4", 170),
-                        Pair("Sample-5", 120),
-                    ),
-                        radiusOuter = 70.dp,
-                        chartBarWidth = 20.dp)
+        Card(
+            modifier = Modifier
+                .height(280.dp)
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp,
+            )
+        ) {
+            Box(modifier = Modifier.padding(20.dp)) {
+                Column() {
+
+                    Text(
+                        text = "Грудень 2023", fontFamily = FontFamily(Font(R.font.main_text)),
+                        fontSize = 20.sp
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                            .padding(top = 35.dp, start = 2.dp, end = 2.dp)
+                    ) {
+                        PieChart(
+                            data = mapOf(
+                                Pair("Sample-1", 150),
+                                Pair("Sample-2", 120),
+                                Pair("Sample-3", 110),
+                                Pair("Sample-4", 170),
+                                Pair("Sample-5", 120),
+                            ),
+                            radiusOuter = 70.dp,
+                            chartBarWidth = 17.dp
+                        )
+                    }
+                    Text(
+                        text = "більше", fontFamily = FontFamily(Font(R.font.main_text)),
+                        fontSize = 14.sp, textAlign = TextAlign.End, modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 10.dp)
+                    )
+
                 }
-
             }
+
+        }
+        
+        Text(
+            text = "Топ витрат", fontFamily = FontFamily(Font(R.font.main_text)),
+            fontSize = 20.sp, modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)
+        )
+        Card(
+            modifier = Modifier
+                .height(280.dp)
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp,
+            )
+        ) {
+            Box() {
+                Column() {
+
+                    Box(modifier = Modifier.padding(start = 20.dp,top = 50.dp), contentAlignment = Alignment.Center){
+                        BarChart(
+                            data = mapOf(
+                                Pair(0.4f, "1"),
+                                Pair(0.2f, "2"),
+                                Pair(0.8f, "3"),
+                                Pair(0.5f, "4"),
+                                Pair(0.8f, "5"),), max_value = 50
+                        )
+                    }
+                    
+                    Text(
+                        text = "більше", fontFamily = FontFamily(Font(R.font.main_text)),
+                        fontSize = 14.sp, textAlign = TextAlign.End, modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top =10.dp, end = 30.dp)
+                    )
+
+                }
+            }
+
         }
 
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
