@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -52,8 +53,13 @@ val fontMont = FontFamily(
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainCostScreen() {
-    val listItems = listOf("Рахунок", "Категорія", "Дата Транзакції")
+fun MainCostScreen(tabIndex: Int) {
+    val listItems = if (tabIndex == 0) {
+        listOf("Рахунок", "Категорія", "Дата Транзакції")
+    } else {
+        listOf("Рахунок", "Категорія", "Дата Транзакції")
+    }
+
     val expandedItems = remember { mutableStateOf(setOf<String>()) }
 
     Box(
@@ -71,8 +77,9 @@ fun MainCostScreen() {
             }
 
             items(listItems) { item ->
-                ListItem(item, expandedItems)
+                ListItem(item, expandedItems, tabIndex) // Передача tabIndex як аргументу
             }
+
 
             item {
                 Text(
@@ -98,7 +105,7 @@ fun MainCostScreen() {
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ListItem(item: String, expandedItems: MutableState<Set<String>>) {
+fun ListItem(item: String, expandedItems: MutableState<Set<String>>, tabIndex: Int) {
     val isExpanded = remember { mutableStateOf(expandedItems.value.contains(item)) }
     val selectedOption = remember { mutableStateOf("") } // Track the selected option
     val selectedDate = remember { mutableStateOf(LocalDate.now()) } // Track the selected date
@@ -126,32 +133,17 @@ fun ListItem(item: String, expandedItems: MutableState<Set<String>>) {
                 modifier = Modifier.size(24.dp)
             )
             Text(text = item, fontFamily = fontMont, fontSize = 18.sp, modifier = Modifier.padding(start = 10.dp))
-            when {
-
-                item == "Дата Транзакції" -> {
-                    Text(
-                        text = selectedOption.value,
-                        fontFamily = fontMont,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(start = 10.dp, end = 0.dp)
-                    )
-                }
-
-                else -> {
-                    Text(
-                        text = selectedOption.value,
-                        fontFamily = fontMont,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(start = 10.dp, end = 0.dp)
-                    )
-                }
-            }
+            Text(
+                text = selectedOption.value,
+                fontFamily = fontMont,
+                fontSize = 16.sp,
+                modifier = Modifier.padding(start = 10.dp, end = 0.dp)
+            )
             Icon(
                 imageVector = if (isExpanded.value) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                 contentDescription = null,
             )
         }
-
 
         if (isExpanded.value) {
             when (item) {
@@ -184,17 +176,18 @@ fun ListItem(item: String, expandedItems: MutableState<Set<String>>) {
                     }
                 }
                 "Категорія" -> {
-                    val categoryOptions = listOf(
-                        "Харчування" to R.drawable.food,
-                        "Житло" to R.drawable.house,
-                        "Розваги" to R.drawable.thunder,
-                        "Товари для дому" to R.drawable.home
-                    )
-                    categoryOptions.forEach { (option, icon) ->
+                    val categoryOptions = if (tabIndex == 0) {
+                        ListItems()
+                    } else {
+                        ListItems2()
+                    }
+                    categoryOptions.forEach  { (option, icon) ->
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clickable { selectedOption.value = option }
+                                .clickable {
+                                    selectedOption.value = option
+                                }
                                 .padding(top = 10.dp)
                         ) {
                             Icon(
@@ -213,6 +206,7 @@ fun ListItem(item: String, expandedItems: MutableState<Set<String>>) {
                         }
                     }
                 }
+
                 "Дата Транзакції" -> {
                     CustomDatePicker(selectedDate)
                 }
@@ -288,7 +282,7 @@ fun Additional() {
     ) {
         Row(
             modifier = Modifier.padding(top = 10.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             MyButton("Фото", R.drawable.gallery, Color(0xFFFFDF8F), {})
@@ -298,7 +292,7 @@ fun Additional() {
         Spacer(modifier = Modifier.height(4.dp))
         Row(
             modifier = Modifier.horizontalScroll(rememberScrollState()),
-            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(14.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             MyButton("Регулярний", R.drawable.regular, Color(0xFFE17ED1), {})
@@ -340,3 +334,22 @@ fun MyButton(
     }
 }
 
+
+@Composable
+private fun ListItems(): List<Pair<String, Int>> {
+    return listOf(
+        "Харчування" to R.drawable.food,
+        "Житло" to R.drawable.house,
+        "Розваги" to R.drawable.thunder,
+        "Товари для дому" to R.drawable.home
+    )
+}
+
+@Composable
+private fun ListItems2(): List<Pair<String, Int>> {
+    return listOf(
+        "Заробітна плата" to R.drawable.salary,
+        "Подарунок" to R.drawable.gift,
+        "Повернення боргу" to R.drawable.borrow
+    )
+}

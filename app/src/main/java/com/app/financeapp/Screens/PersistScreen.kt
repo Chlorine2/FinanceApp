@@ -147,7 +147,7 @@ Column {
         }
 
     }
-    MainCostScreen()
+    MainCostScreen(selectedTabIndex)
 }
 }
 
