@@ -108,7 +108,7 @@ Column {
                 }
             }
 
-            var amountText by remember { mutableStateOf("") }
+            var amountText by remember { mutableStateOf(if (selectedTabIndex == 0) "-53 000" else "+100 000") }
             val currencyText = "UAH"
             val focusManager = LocalFocusManager.current
 
@@ -118,11 +118,7 @@ Column {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
-                    value = if (amountText.isEmpty()) {
-                        if (selectedTabIndex == 0) "-53 000" else "+100 000"
-                    } else {
-                        amountText
-                    },
+                    value = amountText,
                     onValueChange = { newValue -> amountText = newValue },
                     modifier = Modifier.background(boxBackgroundColor),
                     textStyle = TextStyle(fontSize = 24.sp, fontFamily = fontMont),
