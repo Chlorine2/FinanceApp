@@ -99,13 +99,13 @@ fun InUpScreen(
         ) {
             SignButton(
                 text = if (isSignUp) "Sign Up" else "Sign In", // змінено текст кнопки відповідно до типу екрану
-                onClick = {},
+                onClick = { onClick() },
             )
 
-            ReDirect(
+                ReDirect(
                 text = if (isSignUp) "I’m already a member." else "I don't have an account.", // змінено текст переадресації відповідно до типу екрану
                 clickableText = if (isSignUp) " Sign in" else " Sign up", // змінено текст посилання відповідно до типу екрану
-                onClick = { onClick() }
+                onClick = {  }
             )
 
             DoubleHorizontalLinesWithText()

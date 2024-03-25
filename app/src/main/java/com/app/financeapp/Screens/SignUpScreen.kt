@@ -9,8 +9,6 @@ import com.app.financeapp.Screens.additionalScreen.InUpScreen
 
 @Composable
 fun SignUpScreen(onClick : () -> Unit){
-    Text("Sign In Screen", modifier = Modifier.clickable {
-        onClick()
-    })
-    InUpScreen(onClick = {}, isSignUp = true)
+
+    InUpScreen(onClick = {onClick()}, isSignUp = true)
 }
