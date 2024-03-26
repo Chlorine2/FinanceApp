@@ -14,9 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -51,64 +48,22 @@ val fontMont = FontFamily(
     Font(R.font.main_text)
 )
 
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun MainCostScreen(tabIndex: Int) {
-    val listItems = if (tabIndex == 0) {
-        listOf("Рахунок", "Категорія", "Дата Транзакції")
-    } else {
-        listOf("Рахунок", "Категорія", "Дата Транзакції")
-    }
-
-    val expandedItems = remember { mutableStateOf(setOf<String>()) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ){
-        LazyColumn {
-            item {
-                Text(
-                    "Основні",
-                    modifier = Modifier.padding(start = 20.dp, top = 30.dp),
-                    fontFamily = fontMont,
-                    fontSize = 20.sp
-                )
-            }
-
-            items(listItems) { item ->
-                ListItem(item, expandedItems, tabIndex) // Передача tabIndex як аргументу
-            }
 
 
-            item {
-                Text(
-                    "Додатково",
-                    modifier = Modifier.padding(start = 20.dp, top = 20.dp),
-                    fontFamily = fontMont,
-                    fontSize = 20.sp
-                )
-            }
-
-            item {
-                Additional()
-            }
-
-            item {
-                FilledTonalButtonExample()
-            }
-        }
-    }
-}
 
 
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ListItem(item: String, expandedItems: MutableState<Set<String>>, tabIndex: Int) {
+fun ListItem(
+    item: String,
+    expandedItems: MutableState<Set<String>>,
+    tabIndex: Int,
+    selectedOptions: MutableState<Map<String, Any>>,
+    selectedOptions1: MutableState<Map<String, Any>>,
+    ) {
     val isExpanded = remember { mutableStateOf(expandedItems.value.contains(item)) }
-    val selectedOption = remember { mutableStateOf("") } // Track the selected option
-    val selectedDate = remember { mutableStateOf(LocalDate.now()) } // Track the selected date
+    val selectDate = remember { mutableStateOf(LocalDate.now()) }
 
     Column(
         modifier = Modifier
@@ -133,17 +88,22 @@ fun ListItem(item: String, expandedItems: MutableState<Set<String>>, tabIndex: I
                 modifier = Modifier.size(24.dp)
             )
             Text(text = item, fontFamily = fontMont, fontSize = 18.sp, modifier = Modifier.padding(start = 10.dp))
-            Text(
-                text = selectedOption.value,
-                fontFamily = fontMont,
-                fontSize = 16.sp,
-                modifier = Modifier.padding(start = 10.dp, end = 0.dp)
-            )
+
             Icon(
                 imageVector = if (isExpanded.value) Icons.Filled.KeyboardArrowUp else Icons.Filled.KeyboardArrowDown,
                 contentDescription = null,
             )
+            if (selectedOptions.value.containsKey(item)) {
+                Text(
+                    text = selectedOptions.value[item].toString(),
+                    fontFamily = fontMont,
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(start = 40.dp, end = 0.dp)
+                )
+            }
         }
+
+
 
         if (isExpanded.value) {
             when (item) {
@@ -156,7 +116,11 @@ fun ListItem(item: String, expandedItems: MutableState<Set<String>>, tabIndex: I
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
-                                .clickable { selectedOption.value = option }
+                                .clickable {
+                                    selectedOptions.value = selectedOptions.value + (item to option)
+                                    selectedOptions.value = selectedOptions.value
+                                    selectedOptions1.value = selectedOptions1.value + (item to option)
+                                }
                                 .padding(top = 10.dp)
                         ) {
                             Icon(
@@ -186,7 +150,9 @@ fun ListItem(item: String, expandedItems: MutableState<Set<String>>, tabIndex: I
                             verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .clickable {
-                                    selectedOption.value = option
+                                    selectedOptions.value = selectedOptions.value + (item to option)
+                                    selectedOptions.value = selectedOptions.value
+                                    selectedOptions1.value = selectedOptions1.value + (item to option)
                                 }
                                 .padding(top = 10.dp)
                         ) {
@@ -208,18 +174,20 @@ fun ListItem(item: String, expandedItems: MutableState<Set<String>>, tabIndex: I
                 }
 
                 "Дата Транзакції" -> {
-                    CustomDatePicker(selectedDate)
+                    CustomDatePicker(selectDate)
                 }
                 else -> {}
             }
         }
+
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CustomDatePicker(selectedDate: MutableState<LocalDate>) {
+fun CustomDatePicker(selectedOptions: MutableState<LocalDate>) {
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -231,7 +199,7 @@ fun CustomDatePicker(selectedDate: MutableState<LocalDate>) {
         ) {
 
             Text(
-                text = selectedDate.value.toString(),
+                text = selectedOptions.value.toString(),
                 fontFamily = fontMont,
                 fontSize = 16.sp,
                 modifier = Modifier.padding(end = 25.dp)
@@ -247,18 +215,23 @@ fun CustomDatePicker(selectedDate: MutableState<LocalDate>) {
                 style = CalendarStyle.MONTH,
             ),
             selection = CalendarSelection.Date(
-                selectedDate = selectedDate.value
+                selectedDate = selectedOptions.value
             ) { newDate ->
-                selectedDate.value = newDate
+                selectedOptions.value = newDate
             },
         )
+
     }
 }
 
 @Composable
-fun FilledTonalButtonExample() {
+fun FilledTonalButtonExample(
+    onClick: () -> Unit
+) {
     FilledTonalButton(
-        onClick = {  },
+        onClick = {
+            onClick()
+        },
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 10.dp, end = 10.dp),

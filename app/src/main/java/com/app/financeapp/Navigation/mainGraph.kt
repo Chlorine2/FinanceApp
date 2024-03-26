@@ -1,5 +1,7 @@
 package com.app.financeapp.Navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -8,6 +10,7 @@ import com.app.financeapp.Screens.HomeScreen
 import com.app.financeapp.Screens.PersistScreen
 import com.app.financeapp.Screens.StatisticScreen
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun MainNavGraph(navController: NavHostController) {
 

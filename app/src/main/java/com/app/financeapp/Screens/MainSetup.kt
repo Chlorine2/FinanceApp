@@ -1,18 +1,15 @@
 package com.app.financeapp.Screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AddCircle
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Notifications
-import androidx.compose.material.icons.rounded.Settings
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -36,6 +33,7 @@ import com.app.financeapp.Navigation.MainNavGraph
 import com.app.financeapp.Navigation.ScreensEnum
 import com.app.financeapp.R
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainSetup(navController: NavHostController = rememberNavController()){

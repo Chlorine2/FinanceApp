@@ -1,17 +1,24 @@
 package com.app.financeapp.Screens
 
 
-import MainCostScreen
+import Additional
+import FilledTonalButtonExample
+import ListItem
+import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -40,10 +47,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.financeapp.R
+import fontMont
+import java.time.LocalDate
 
 
+@SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PersistScreen(){
     val fontMont = FontFamily(
@@ -58,7 +67,17 @@ fun PersistScreen(){
         Color(0xFF58F2A9)
     }
 
-Column {
+    var globalAmountText by remember {
+        mutableStateOf("-53 000")
+    }
+
+    var globalAmountText1 by remember {
+        mutableStateOf("+100 000")
+    }
+
+
+
+    Column {
     Box(
         modifier = Modifier
             .background(boxBackgroundColor)
@@ -108,7 +127,6 @@ Column {
                 }
             }
 
-            var amountText by remember { mutableStateOf(if (selectedTabIndex == 0) "-53 000" else "+100 000") }
             val currencyText = "UAH"
             val focusManager = LocalFocusManager.current
 
@@ -117,38 +135,162 @@ Column {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                OutlinedTextField(
-                    value = amountText,
-                    onValueChange = { newValue -> amountText = newValue },
-                    modifier = Modifier.background(boxBackgroundColor),
-                    textStyle = TextStyle(fontSize = 24.sp, fontFamily = fontMont),
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ), keyboardActions = KeyboardActions(onDone = {
-                        focusManager.clearFocus()
-                    }),
+                if(selectedTabIndex == 0){
+                    OutlinedTextField(
+                        value = globalAmountText,
+                        onValueChange = { newValue ->
+                            globalAmountText = newValue
+                        },
+                        modifier = Modifier.background(boxBackgroundColor),
+                        textStyle = TextStyle(fontSize = 24.sp, fontFamily = fontMont),
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ), keyboardActions = KeyboardActions(onDone = {
+                            focusManager.clearFocus()
+                        }),
 
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedBorderColor = boxBackgroundColor,
-                        unfocusedBorderColor = boxBackgroundColor,
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = boxBackgroundColor,
+                            unfocusedBorderColor = boxBackgroundColor,
+                        )
                     )
-                )
+                } else {
+                    OutlinedTextField(
+                        value = globalAmountText1,
+                        onValueChange = { newValue ->
+                            globalAmountText1 = newValue
+                        },
+                        modifier = Modifier.background(boxBackgroundColor),
+                        textStyle = TextStyle(fontSize = 24.sp, fontFamily = fontMont),
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ), keyboardActions = KeyboardActions(onDone = {
+                            focusManager.clearFocus()
+                        }),
+
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = boxBackgroundColor,
+                            unfocusedBorderColor = boxBackgroundColor,
+                        )
+                    )
+                }
+
                 Text(
                     text = currencyText,
                     style = TextStyle(fontSize = 24.sp, fontFamily = fontMont)
                 )
+
             }
 
         }
 
     }
-    MainCostScreen(selectedTabIndex)
+        MainCostScreen(selectedTabIndex, globalAmountText, globalAmountText1)
+
+    }
 }
+
+
+
+
+
+@SuppressLint("RememberReturnType")
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String) {
+    val listItems = if (tabIndex == 0) {
+        listOf("Рахунок", "Категорія", "Дата Транзакції")
+    } else {
+        listOf("Рахунок", "Категорія", "Дата Транзакції")
+    }
+
+    val selectDate = remember {
+        mutableStateOf(LocalDate.now())
+    }
+
+    val selectedOptions1 = remember {
+        mutableStateOf(
+            mapOf(
+                "Cумма" to amountText1,
+                "Рахунок" to "",
+                "Категорія" to "",
+                "Дата Транзакції" to selectDate.value
+
+            ) as Map<String, Any>)
+    }
+
+    val selectedOptions = remember {
+        if (tabIndex == 0) {
+            mutableStateOf(
+                mapOf(
+                    "Cумма" to amountText,
+                    "Рахунок" to "",
+                    "Категорія" to "",
+                    "Дата Транзакції" to selectDate.value
+
+                ) as Map<String, Any>
+            )
+        } else {
+            mutableStateOf(
+                mapOf(
+                    "Cумма" to amountText1,
+                    "Рахунок" to "",
+                    "Категорія" to "",
+                    "Дата Транзакції" to selectDate.value
+
+                ) as Map<String, Any>
+            )
+        }
+    }
+
+
+    val expandedItems = remember { mutableStateOf(setOf<String>()) }
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ){
+        LazyColumn {
+            item {
+                Text(
+                    "Основні",
+                    modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+                    fontFamily = fontMont,
+                    fontSize = 20.sp
+                )
+            }
+
+            items(listItems) { item ->
+                ListItem(item, expandedItems, tabIndex, selectedOptions, selectedOptions1)
+            }
+
+
+            item {
+                Text(
+                    "Додатково",
+                    modifier = Modifier.padding(start = 20.dp, top = 20.dp),
+                    fontFamily = fontMont,
+                    fontSize = 20.sp
+                )
+            }
+
+            item {
+                Additional()
+            }
+
+            item{
+                FilledTonalButtonExample() {
+                    if (tabIndex == 0) {
+                        Log.d("CATEGORY", "Витрати: ${selectedOptions.value}")
+                    } else {
+                        Log.d("CATEGORY", "Доходи: ${selectedOptions1.value}")
+                    }
+                }
+            }
+
+        }
+    }
 }
-
-
-
-
-
-
