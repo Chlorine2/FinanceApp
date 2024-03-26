@@ -1,4 +1,6 @@
+import android.annotation.SuppressLint
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -48,6 +52,104 @@ val fontMont = FontFamily(
     Font(R.font.main_text)
 )
 
+@SuppressLint("RememberReturnType")
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String) {
+    val listItems = if (tabIndex == 0) {
+        listOf("Рахунок", "Категорія", "Дата Транзакції")
+    } else {
+        listOf("Рахунок", "Категорія", "Дата Транзакції")
+    }
+
+    val selectDate = remember {
+        mutableStateOf(LocalDate.now())
+    }
+
+    val selectedOptions1 = remember {
+        mutableStateOf(
+            mapOf(
+                "Cумма" to amountText1,
+                "Рахунок" to "",
+                "Категорія" to "",
+                "Дата Транзакції" to selectDate.value
+
+            ) as Map<String, Any>)
+    }
+
+    val selectedOptions = remember {
+        if (tabIndex == 0) {
+            mutableStateOf(
+                mapOf(
+                    "Cумма" to amountText,
+                    "Рахунок" to "",
+                    "Категорія" to "",
+                    "Дата Транзакції" to selectDate.value
+
+                ) as Map<String, Any>
+            )
+        } else {
+            mutableStateOf(
+                mapOf(
+                    "Cумма" to amountText1,
+                    "Рахунок" to "",
+                    "Категорія" to "",
+                    "Дата Транзакції" to selectDate.value
+
+                ) as Map<String, Any>
+            )
+        }
+    }
+
+
+    val expandedItems = remember { mutableStateOf(setOf<String>()) }
+
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+    ){
+        LazyColumn {
+            item {
+                Text(
+                    "Основні",
+                    modifier = Modifier.padding(start = 20.dp, top = 10.dp),
+                    fontFamily = fontMont,
+                    fontSize = 20.sp
+                )
+            }
+
+            items(listItems) { item ->
+                ListItem(item, expandedItems, tabIndex, selectedOptions, selectedOptions1)
+            }
+
+
+            item {
+                Text(
+                    "Додатково",
+                    modifier = Modifier.padding(start = 20.dp, top = 20.dp),
+                    fontFamily = fontMont,
+                    fontSize = 20.sp
+                )
+            }
+
+            item {
+                Additional()
+            }
+
+            item{
+                FilledTonalButtonExample() {
+                    if (tabIndex == 0) {
+                        Log.d("CATEGORY", "Витрати: ${selectedOptions.value}")
+                    } else {
+                        Log.d("CATEGORY", "Доходи: ${selectedOptions1.value}")
+                    }
+                }
+            }
+
+        }
+    }
+}
 
 
 
@@ -141,9 +243,9 @@ fun ListItem(
                 }
                 "Категорія" -> {
                     val categoryOptions = if (tabIndex == 0) {
-                        ListItems()
+                        listItems()
                     } else {
-                        ListItems2()
+                        listItems2()
                     }
                     categoryOptions.forEach  { (option, icon) ->
                         Row(
@@ -309,7 +411,7 @@ fun MyButton(
 
 
 @Composable
-private fun ListItems(): List<Pair<String, Int>> {
+private fun listItems(): List<Pair<String, Int>> {
     return listOf(
         "Харчування" to R.drawable.food,
         "Житло" to R.drawable.house,
@@ -319,7 +421,7 @@ private fun ListItems(): List<Pair<String, Int>> {
 }
 
 @Composable
-private fun ListItems2(): List<Pair<String, Int>> {
+private fun listItems2(): List<Pair<String, Int>> {
     return listOf(
         "Заробітна плата" to R.drawable.salary,
         "Подарунок" to R.drawable.gift,

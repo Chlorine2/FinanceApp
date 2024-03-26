@@ -1,27 +1,20 @@
 package com.app.financeapp.Screens
 
 
-import Additional
-import FilledTonalButtonExample
-import ListItem
+import MainCostScreen
 import android.annotation.SuppressLint
 import android.os.Build
-import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Tab
@@ -47,8 +40,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.financeapp.R
-import fontMont
-import java.time.LocalDate
 
 
 @SuppressLint("UnrememberedMutableState")
@@ -196,101 +187,3 @@ fun PersistScreen(){
 
 
 
-@SuppressLint("RememberReturnType")
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String) {
-    val listItems = if (tabIndex == 0) {
-        listOf("Рахунок", "Категорія", "Дата Транзакції")
-    } else {
-        listOf("Рахунок", "Категорія", "Дата Транзакції")
-    }
-
-    val selectDate = remember {
-        mutableStateOf(LocalDate.now())
-    }
-
-    val selectedOptions1 = remember {
-        mutableStateOf(
-            mapOf(
-                "Cумма" to amountText1,
-                "Рахунок" to "",
-                "Категорія" to "",
-                "Дата Транзакції" to selectDate.value
-
-            ) as Map<String, Any>)
-    }
-
-    val selectedOptions = remember {
-        if (tabIndex == 0) {
-            mutableStateOf(
-                mapOf(
-                    "Cумма" to amountText,
-                    "Рахунок" to "",
-                    "Категорія" to "",
-                    "Дата Транзакції" to selectDate.value
-
-                ) as Map<String, Any>
-            )
-        } else {
-            mutableStateOf(
-                mapOf(
-                    "Cумма" to amountText1,
-                    "Рахунок" to "",
-                    "Категорія" to "",
-                    "Дата Транзакції" to selectDate.value
-
-                ) as Map<String, Any>
-            )
-        }
-    }
-
-
-    val expandedItems = remember { mutableStateOf(setOf<String>()) }
-
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-    ){
-        LazyColumn {
-            item {
-                Text(
-                    "Основні",
-                    modifier = Modifier.padding(start = 20.dp, top = 10.dp),
-                    fontFamily = fontMont,
-                    fontSize = 20.sp
-                )
-            }
-
-            items(listItems) { item ->
-                ListItem(item, expandedItems, tabIndex, selectedOptions, selectedOptions1)
-            }
-
-
-            item {
-                Text(
-                    "Додатково",
-                    modifier = Modifier.padding(start = 20.dp, top = 20.dp),
-                    fontFamily = fontMont,
-                    fontSize = 20.sp
-                )
-            }
-
-            item {
-                Additional()
-            }
-
-            item{
-                FilledTonalButtonExample() {
-                    if (tabIndex == 0) {
-                        Log.d("CATEGORY", "Витрати: ${selectedOptions.value}")
-                    } else {
-                        Log.d("CATEGORY", "Доходи: ${selectedOptions1.value}")
-                    }
-                }
-            }
-
-        }
-    }
-}
