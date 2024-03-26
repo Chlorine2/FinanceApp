@@ -39,13 +39,16 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.financeapp.AppViewModelProvider
 import com.app.financeapp.R
+import com.app.financeapp.ViewModels.PersistViewModel
 
 
 @SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PersistScreen(){
+fun PersistScreen(viewModel: PersistViewModel = viewModel(factory = AppViewModelProvider.Factory)){
     val fontMont = FontFamily(
         Font(R.font.main_text)
     )
@@ -178,7 +181,8 @@ fun PersistScreen(){
         }
 
     }
-        MainCostScreen(selectedTabIndex, globalAmountText, globalAmountText1)
+
+        MainCostScreen(selectedTabIndex, globalAmountText, globalAmountText1, viewModel)
 
     }
 }

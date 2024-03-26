@@ -12,7 +12,6 @@ import com.app.financeapp.ViewModels.PersistViewModel
 
 @Composable
 fun SignInScreen(onClick: () -> Unit) {
-    val viewModel: PersistViewModel = viewModel(factory = AppViewModelProvider.Factory)
     InUpScreen(onClick = {onClick()}, isSignUp = false)
 }
 

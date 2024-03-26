@@ -14,8 +14,11 @@ class PersistViewModel(private val itemRepository: FinanceItemsRepository) : Vie
 
     init {
         viewModelScope.launch {
-            //itemRepository.insert(FinanceItem(total = 200, account = "CARD", category = "CATEGORY", date = "12.10.2005"))
-            //itemRepository.delete(2)
+
         }
+    }
+    fun insert(item: FinanceItem) = viewModelScope.launch {
+
+        itemRepository.insert(item)
     }
 }

@@ -1,6 +1,7 @@
 import android.annotation.SuppressLint
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,12 +36,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.app.financeapp.Database.FinanceItem
 import com.app.financeapp.R
+import com.app.financeapp.ViewModels.PersistViewModel
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -55,7 +59,9 @@ val fontMont = FontFamily(
 @SuppressLint("RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String) {
+fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String, viewModel: PersistViewModel) {
+
+    val context = LocalContext.current
     val listItems = if (tabIndex == 0) {
         listOf("Рахунок", "Категорія", "Дата Транзакції")
     } else {
@@ -140,9 +146,28 @@ fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String) {
             item{
                 FilledTonalButtonExample() {
                     if (tabIndex == 0) {
-                        Log.d("CATEGORY", "Витрати: ${selectedOptions.value}")
+                        Toast.makeText(context, "Записано", Toast.LENGTH_SHORT).show()
+
+                        viewModel.insert(FinanceItem(
+                            total = selectedOptions.value.getValue("Cумма").toString().replace("\\s".toRegex(), "").toInt(),
+                            account = selectedOptions.value.getValue("Рахунок").toString(),
+                            category = if (selectedOptions.value.getValue("Категорія").toString() == "") "Основні"
+                                else selectedOptions.value.getValue("Категорія").toString(),
+                            date = selectedOptions.value.getValue("Дата Транзакції").toString()
+                            ))
+
+                        Log.d("CATEGORY", selectedOptions.value.toString())
                     } else {
-                        Log.d("CATEGORY", "Доходи: ${selectedOptions1.value}")
+
+                        Toast.makeText(context, "Записано", Toast.LENGTH_SHORT).show()
+
+                        viewModel.insert(FinanceItem(
+                            total = selectedOptions1.value.getValue("Cумма").toString().replace("\\s".toRegex(), "").toInt(),
+                            account = selectedOptions1.value.getValue("Рахунок").toString(),
+                            category = if (selectedOptions1.value.getValue("Категорія").toString() == "") "Основні"
+                            else selectedOptions1.value.getValue("Категорія").toString(),
+                            date = selectedOptions1.value.getValue("Дата Транзакції").toString()
+                        ))
                     }
                 }
             }
@@ -413,6 +438,7 @@ fun MyButton(
 @Composable
 private fun listItems(): List<Pair<String, Int>> {
     return listOf(
+        "Основні" to R.drawable.salary,
         "Харчування" to R.drawable.food,
         "Житло" to R.drawable.house,
         "Розваги" to R.drawable.thunder,
@@ -423,6 +449,7 @@ private fun listItems(): List<Pair<String, Int>> {
 @Composable
 private fun listItems2(): List<Pair<String, Int>> {
     return listOf(
+        "Основні" to R.drawable.salary,
         "Заробітна плата" to R.drawable.salary,
         "Подарунок" to R.drawable.gift,
         "Повернення боргу" to R.drawable.borrow
