@@ -14,3 +14,9 @@ data class FinanceItem (
     val date : String
 
 )
+
+data class CategoryTotalSum(
+    val category: String,
+    val total: Int
+
+)

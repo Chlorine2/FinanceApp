@@ -42,13 +42,13 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.app.financeapp.AppViewModelProvider
 import com.app.financeapp.R
-import com.app.financeapp.ViewModels.PersistViewModel
+import com.app.financeapp.ViewModels.DBViewModel
 
 
 @SuppressLint("UnrememberedMutableState")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PersistScreen(viewModel: PersistViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+fun PersistScreen(viewModel: DBViewModel = viewModel(factory = AppViewModelProvider.Factory)){
     val fontMont = FontFamily(
         Font(R.font.main_text)
     )

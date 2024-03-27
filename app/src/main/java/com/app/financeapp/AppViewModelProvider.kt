@@ -1,16 +1,15 @@
 package com.app.financeapp
 
-import android.text.Spannable.Factory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.app.financeapp.ViewModels.PersistViewModel
+import com.app.financeapp.ViewModels.DBViewModel
 
 object AppViewModelProvider {
     val Factory = viewModelFactory {
         initializer {
-            PersistViewModel(inventoryApplication().container.itemsRepository)
+            DBViewModel(inventoryApplication().container.itemsRepository)
         }
     }
 }

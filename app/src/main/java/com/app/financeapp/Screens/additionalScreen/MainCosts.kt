@@ -44,7 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.app.financeapp.Database.FinanceItem
 import com.app.financeapp.R
-import com.app.financeapp.ViewModels.PersistViewModel
+import com.app.financeapp.ViewModels.DBViewModel
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
 import com.maxkeppeler.sheets.calendar.CalendarDialog
 import com.maxkeppeler.sheets.calendar.models.CalendarConfig
@@ -59,7 +59,7 @@ val fontMont = FontFamily(
 @SuppressLint("RememberReturnType")
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String, viewModel: PersistViewModel) {
+fun MainCostScreen(tabIndex: Int, amountText:String, amountText1: String, viewModel: DBViewModel) {
 
     val context = LocalContext.current
     val listItems = if (tabIndex == 0) {

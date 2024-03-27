@@ -1,5 +1,6 @@
 package com.app.financeapp.Screens
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -40,13 +42,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.app.financeapp.AppViewModelProvider
 import com.app.financeapp.Navigation.ScreensEnum
 import com.app.financeapp.R
 import com.app.financeapp.Screens.Chart.BarChart
 import com.app.financeapp.Screens.Chart.PieChart
+import com.app.financeapp.ViewModels.DBViewModel
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(viewModel: DBViewModel = viewModel(factory = AppViewModelProvider.Factory)){
+
     var tabIndex by remember{
         mutableIntStateOf(0)
     }
@@ -134,7 +140,7 @@ fun HomeScreen(){
             }
             Spacer(modifier = Modifier.height(10.dp))
             when(tabIndex){
-                0 -> Costs()
+                0 -> Costs(viewModel)
                 1 -> Income()
             }
 
@@ -146,7 +152,7 @@ fun HomeScreen(){
 }
 
 @Composable
-fun Costs(){
+fun Costs(viewModel: DBViewModel){
     Column(modifier = Modifier
         .verticalScroll(rememberScrollState())
         .padding(horizontal = 10.dp)) {
@@ -177,17 +183,27 @@ fun Costs(){
                             .fillMaxWidth()
                             .padding(top = 35.dp, start = 2.dp, end = 2.dp)
                     ) {
-                        PieChart(
-                            data = mapOf(
-                                Pair("Sample-1", 150),
-                                Pair("Sample-2", 120),
-                                Pair("Sample-3", 110),
-                                Pair("Sample-4", 170),
-                                Pair("Sample-5", 120),
-                            ),
-                            radiusOuter = 70.dp,
-                            chartBarWidth = 17.dp
-                        )
+
+                        val allItems = viewModel.getAllSpendingItems().collectAsState(initial = listOf())
+                        val categories = viewModel.getUniqueItems().collectAsState(initial = listOf())
+                        val sumCategory = viewModel.getUniqueCategoriesWithTotalSums().collectAsState(initial = listOf())
+                        if (allItems.value.isNotEmpty()) {
+
+                            var iterator : Int = 0
+                            val data = mutableMapOf<String, Int>()
+                            Log.d("teg", categories.value.size.toString())
+                            while (iterator < sumCategory.value.size){
+                                data[sumCategory.value[iterator].category] = sumCategory.value[iterator].total
+                                iterator++
+
+                            }
+
+                            PieChart(
+                                data = data,
+                                radiusOuter = 70.dp,
+                                chartBarWidth = 17.dp
+                            )
+                        }
                     }
                     Text(
                         text = "більше", fontFamily = FontFamily(Font(R.font.main_text)),
@@ -234,7 +250,7 @@ fun Costs(){
                         text = "більше", fontFamily = FontFamily(Font(R.font.main_text)),
                         fontSize = 14.sp, textAlign = TextAlign.End, modifier = Modifier
                             .fillMaxWidth()
-                            .padding(top =10.dp, end = 30.dp)
+                            .padding(top = 10.dp, end = 30.dp)
                     )
 
                 }

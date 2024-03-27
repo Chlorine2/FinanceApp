@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,10 +31,12 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 
 @Composable
@@ -185,14 +188,19 @@ fun DetailsPieChartItem(
 
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    modifier = Modifier.padding(start = 15.dp),
+                    modifier = Modifier.padding(start = 10.dp),
                     text = data.first,
                     fontWeight = FontWeight.Medium,
                     fontSize = 10.sp,
-                    color = Color.Black
+                    color = Color.Black,
+                    style = LocalTextStyle.current.merge(
+                        TextStyle(
+                        lineHeight = 1.3.em,
+                        )
+                    )
                 )
                 Text(
-                    modifier = Modifier.padding(start = 15.dp),
+                    modifier = Modifier.padding(start = 10.dp),
                     text = data.second.toString(),
                     fontWeight = FontWeight.Medium,
                     fontSize = 10.sp,

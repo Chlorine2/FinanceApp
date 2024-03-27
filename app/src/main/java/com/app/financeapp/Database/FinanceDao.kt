@@ -22,9 +22,14 @@ interface FinanceDao {
     @Query("SELECT * FROM FinanceTable WHERE total < 0 ORDER BY date")
     fun getSpendingItems() : Flow<List<FinanceItem>>
 
+    @Query("SELECT DISTINCT category FROM FinanceTable")
+    fun getUniqueCategory() : Flow<List<String>>
     @Query("SELECT * FROM FinanceTable WHERE total > 0 ORDER BY date")
     fun getIncomeItems() : Flow<List<FinanceItem>>
 
     @Query("SELECT * FROM FinanceTable WHERE id == :id")
     fun getItem(id : Int) : Flow<FinanceItem>
+
+    @Query("SELECT category, SUM(total) AS total FROM FinanceTable GROUP BY category")
+    fun getUniqueCategoriesWithTotalSums(): Flow<List<CategoryTotalSum>>
 }
