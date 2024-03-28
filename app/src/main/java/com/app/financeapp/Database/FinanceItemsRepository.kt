@@ -13,14 +13,13 @@ interface FinanceItemsRepository {
 
     suspend fun  delete(id: Int)
 
-    fun getUniqueItems() : Flow<List<String>>
-
     fun getSpendingItems() : Flow<List<FinanceItem>>
 
     fun getIncomeItems() : Flow<List<FinanceItem>>
 
     fun getItem(id : Int) : Flow<FinanceItem>
 
-    fun getUniqueCategoriesWithTotalSums(): Flow<List<CategoryTotalSum>>
+    fun getUniqueSpendingCategoriesWithTotalSums(): Flow<List<CategoryTotalSum>>
+    fun getUniqueIncomeCategoriesWithTotalSums(): Flow<List<CategoryTotalSum>>
 
 }

@@ -141,7 +141,7 @@ fun HomeScreen(viewModel: DBViewModel = viewModel(factory = AppViewModelProvider
             Spacer(modifier = Modifier.height(10.dp))
             when(tabIndex){
                 0 -> Costs(viewModel)
-                1 -> Income()
+                1 -> Income(viewModel)
             }
 
 
@@ -185,13 +185,11 @@ fun Costs(viewModel: DBViewModel){
                     ) {
 
                         val allItems = viewModel.getAllSpendingItems().collectAsState(initial = listOf())
-                        val categories = viewModel.getUniqueItems().collectAsState(initial = listOf())
-                        val sumCategory = viewModel.getUniqueCategoriesWithTotalSums().collectAsState(initial = listOf())
+                        val sumCategory = viewModel.getUniqueSpendingCategoriesWithTotalSums().collectAsState(initial = listOf())
                         if (allItems.value.isNotEmpty()) {
 
                             var iterator : Int = 0
                             val data = mutableMapOf<String, Int>()
-                            Log.d("teg", categories.value.size.toString())
                             while (iterator < sumCategory.value.size){
                                 data[sumCategory.value[iterator].category] = sumCategory.value[iterator].total
                                 iterator++
@@ -263,25 +261,111 @@ fun Costs(viewModel: DBViewModel){
 }
 
 @Composable
-fun Income(){
-    Card(modifier = Modifier
-        .height(300.dp)
-        .fillMaxWidth(),
-        colors = CardDefaults.cardColors(
-            containerColor = Color.White
-        ),
-    ){
-        Box(contentAlignment = Alignment.Center, modifier = Modifier.fillMaxSize()){
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Icon(imageVector = Icons.Default.AddCircle,
-                    contentDescription = "add account",
-                    tint = Color(0xFFaa8eff)
-                )
-                Text(text = "Додати рахунок", fontFamily = FontFamily.SansSerif,
-                    fontSize = 15.sp)
+fun Income(viewModel: DBViewModel){
+    Column(modifier = Modifier
+        .verticalScroll(rememberScrollState())
+        .padding(horizontal = 10.dp)) {
+
+
+        Card(
+            modifier = Modifier
+                .height(280.dp)
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp,
+            )
+        ) {
+            Box(modifier = Modifier.padding(20.dp)) {
+                Column() {
+
+                    Text(
+                        text = "Грудень 2023", fontFamily = FontFamily(Font(R.font.main_text)),
+                        fontSize = 20.sp
+                    )
+
+                    Box(
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                            .padding(top = 35.dp, start = 2.dp, end = 2.dp)
+                    ) {
+
+                        val allItems = viewModel.getAllSpendingItems().collectAsState(initial = listOf())
+                        val sumCategory = viewModel.getUniqueIncomeCategoriesWithTotalSums().collectAsState(initial = listOf())
+                        if (allItems.value.isNotEmpty()) {
+
+                            var iterator : Int = 0
+                            val data = mutableMapOf<String, Int>()
+                            while (iterator < sumCategory.value.size){
+                                data[sumCategory.value[iterator].category] = sumCategory.value[iterator].total
+                                iterator++
+
+                            }
+
+                            PieChart(
+                                data = data,
+                                radiusOuter = 70.dp,
+                                chartBarWidth = 17.dp
+                            )
+                        }
+                    }
+                    Text(
+                        text = "більше", fontFamily = FontFamily(Font(R.font.main_text)),
+                        fontSize = 14.sp, textAlign = TextAlign.End, modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 10.dp)
+                    )
+
+                }
             }
+
         }
 
+        Text(
+            text = "Топ доходів", fontFamily = FontFamily(Font(R.font.main_text)),
+            fontSize = 20.sp, modifier = Modifier.padding(vertical = 20.dp, horizontal = 30.dp)
+        )
+        Card(
+            modifier = Modifier
+                .height(280.dp)
+                .fillMaxWidth(),
+            colors = CardDefaults.cardColors(
+                containerColor = Color.White
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 4.dp,
+            )
+        ) {
+            Box() {
+                Column() {
+
+                    Box(modifier = Modifier.padding(start = 20.dp,top = 50.dp), contentAlignment = Alignment.Center){
+                        BarChart(
+                            data = mapOf(
+                                Pair(0.4f, "1"),
+                                Pair(0.2f, "2"),
+                                Pair(0.8f, "3"),
+                                Pair(0.5f, "4"),
+                                Pair(0.8f, "5"),), max_value = 50
+                        )
+                    }
+
+                    Text(
+                        text = "більше", fontFamily = FontFamily(Font(R.font.main_text)),
+                        fontSize = 14.sp, textAlign = TextAlign.End, modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 10.dp, end = 30.dp)
+                    )
+
+                }
+            }
+
+        }
+
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 data class HomeTabRowItem(

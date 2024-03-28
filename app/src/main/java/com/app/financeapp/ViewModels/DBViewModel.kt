@@ -23,11 +23,12 @@ class DBViewModel(private val itemRepository: FinanceItemsRepository) : ViewMode
     fun getAllSpendingItems() : Flow<List<FinanceItem>>{
         return itemRepository.getSpendingItems()
     }
-    fun getUniqueItems() : Flow<List<String>>{
-        return itemRepository.getUniqueItems()
+
+    fun getUniqueSpendingCategoriesWithTotalSums() : Flow<List<CategoryTotalSum>>{
+        return itemRepository.getUniqueSpendingCategoriesWithTotalSums()
     }
 
-    fun getUniqueCategoriesWithTotalSums() : Flow<List<CategoryTotalSum>>{
-        return itemRepository.getUniqueCategoriesWithTotalSums()
+    fun getUniqueIncomeCategoriesWithTotalSums() : Flow<List<CategoryTotalSum>>{
+        return itemRepository.getUniqueIncomeCategoriesWithTotalSums()
     }
 }
